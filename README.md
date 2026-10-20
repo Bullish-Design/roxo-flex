@@ -177,7 +177,7 @@ Use an ordinary Markdown link in the source page. Hugo resolves both site paths 
 Explore the [Field Guide](../portfolio/field-guide.md).
 ```
 
-The link still works when JavaScript is unavailable. Desktop readers can hover over it. Readers can also use the adjacent button to open the box by keyboard or touch. Press Escape or use the close button to close it.
+The link still works when JavaScript is unavailable. Desktop readers can hover over it. Readers can also use the adjacent button to open the box by keyboard or touch. Click the box's content to open the destination page. Press Escape or use the close button to close the box.
 
 The `preview` shortcode remains available for one-off links and external links. For an external link, set its address and preview text yourself:
 

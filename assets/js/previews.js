@@ -1,6 +1,7 @@
 document.querySelectorAll(".link-preview").forEach((preview, index) => {
   const toggle = preview.querySelector(".link-preview__toggle");
   const card = preview.querySelector(".link-preview__card");
+  const destination = preview.querySelector(".link-preview__destination");
   const close = preview.querySelector(".link-preview__close");
   let pinned = false;
   let hideTimer;
@@ -50,7 +51,7 @@ document.querySelectorAll(".link-preview").forEach((preview, index) => {
     } else {
       pinned = true;
       show();
-      close.focus({preventScroll: true});
+      destination.focus({preventScroll: true});
     }
   });
   close.addEventListener("click", () => {

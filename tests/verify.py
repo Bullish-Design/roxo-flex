@@ -105,6 +105,7 @@ assert "{{< preview" not in (source / "content/projects/wayfinding.md").read_tex
 assert project.count('class="link-preview"') == 1
 assert 'href="/portfolio/field-guide/"' in project
 assert 'class="link-preview__card"' in project
+assert '<a class="link-preview__destination" href="/portfolio/field-guide/">' in project
 assert target_front["description"] in project
 assert '<a href="/contact/">contact page</a>' in project
 assert 'src="/js/previews.js"' in project

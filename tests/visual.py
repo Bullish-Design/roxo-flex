@@ -124,6 +124,8 @@ window.addEventListener("load", function () {
   const link = preview.querySelector("a");
   const toggle = preview.querySelector(".link-preview__toggle");
   const card = preview.querySelector(".link-preview__card");
+  const destination = card.querySelector(".link-preview__destination");
+  const close = card.querySelector(".link-preview__close");
   const body = document.body;
   const columns = document.querySelector(".content-columns");
   body.dataset.columnCount = getComputedStyle(columns).gridTemplateColumns.split(" ").length;
@@ -138,9 +140,12 @@ window.addEventListener("load", function () {
     body.dataset.previewTouch = card.hidden;
     toggle.click();
     body.dataset.previewClick = !card.hidden && toggle.getAttribute("aria-expanded") === "true";
+    body.dataset.previewDestination = destination.getAttribute("href");
+    body.dataset.previewCardLink = card.contains(destination) && !destination.contains(close) && destination.offsetWidth > 0;
+    body.dataset.previewFocus = document.activeElement === destination;
     body.dataset.previewPosition = getComputedStyle(card).position;
     body.dataset.previewOverflow = document.documentElement.scrollWidth - window.innerWidth;
-    card.querySelector(".link-preview__close").click();
+    close.click();
     body.dataset.previewClose = card.hidden;
     toggle.click();
     document.dispatchEvent(new KeyboardEvent("keydown", {key: "Escape"}));
@@ -160,9 +165,10 @@ window.addEventListener("load", function () {
                     f"http://127.0.0.1:{port}/{preview_page}/probe.html"],
                     capture_output=True, text=True, timeout=30)
                 assert result.returncode == 0, result.stderr[-1000:]
-                for field in ("ready", "hover", "left", "touch", "click", "close", "escape"):
+                for field in ("ready", "hover", "left", "touch", "click", "card-link", "focus", "close", "escape"):
                     assert f'data-preview-{field}="true"' in result.stdout, (site, viewport, field)
                 assert 'data-preview-link="/portfolio/field-guide/"' in result.stdout
+                assert 'data-preview-destination="/portfolio/field-guide/"' in result.stdout
                 expected_columns = 1 if viewport == "mobile" else 2
                 assert f'data-column-count="{expected_columns}"' in result.stdout
                 assert 'data-preview-position="fixed"' in result.stdout
@@ -183,6 +189,22 @@ window.addEventListener("load", function () {
                 assert shot.returncode == 0, shot.stderr[-1000:]
                 with image.open("rb") as file:
                     assert file.read(8) == b"\x89PNG\r\n\x1a\n"
-                print(f"{site} {viewport} preview: hover, click, Escape, link, and fit passed")
+                navigate_script = '''<script>
+window.addEventListener("load", function () {
+  document.querySelector(".link-preview__toggle").click();
+  const link = document.querySelector(".link-preview__destination");
+  const box = link.getBoundingClientRect();
+  document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2).click();
+});
+</script></body>'''
+                (root / site / preview_page / "navigate.html").write_text(
+                    preview_source.replace("</body>", navigate_script)
+                )
+                navigation = subprocess.run(base + ["--dump-dom",
+                    f"http://127.0.0.1:{port}/{preview_page}/navigate.html"],
+                    capture_output=True, text=True, timeout=30)
+                assert navigation.returncode == 0, navigation.stderr[-1000:]
+                assert "<h1>Field Guide</h1>" in navigation.stdout, (site, viewport, "preview navigation")
+                print(f"{site} {viewport} preview: hover, focus, close, navigation, and fit passed")
     finally:
         server.shutdown()
