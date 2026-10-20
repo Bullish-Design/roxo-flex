@@ -125,6 +125,8 @@ window.addEventListener("load", function () {
   const toggle = preview.querySelector(".link-preview__toggle");
   const card = preview.querySelector(".link-preview__card");
   const body = document.body;
+  const columns = document.querySelector(".content-columns");
+  body.dataset.columnCount = getComputedStyle(columns).gridTemplateColumns.split(" ").length;
   body.dataset.previewLink = link.getAttribute("href");
   body.dataset.previewReady = !toggle.hidden && card.hidden;
   preview.dispatchEvent(new PointerEvent("pointerenter", {pointerType: "mouse"}));
@@ -161,6 +163,8 @@ window.addEventListener("load", function () {
                 for field in ("ready", "hover", "left", "touch", "click", "close", "escape"):
                     assert f'data-preview-{field}="true"' in result.stdout, (site, viewport, field)
                 assert 'data-preview-link="/portfolio/field-guide/"' in result.stdout
+                expected_columns = 1 if viewport == "mobile" else 2
+                assert f'data-column-count="{expected_columns}"' in result.stdout
                 assert 'data-preview-position="fixed"' in result.stdout
                 match = re.search(r'data-preview-overflow="(-?\d+)"', result.stdout)
                 assert match and int(match.group(1)) <= 1, (site, viewport, "preview overflow")

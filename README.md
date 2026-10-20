@@ -173,6 +173,21 @@ Read the {{< preview href="https://example.org/guide" title="Example guide" summ
 
 The theme does not fetch external pages. It uses only site-owned content. Preview boxes use the colors, fonts, image filter, and button radius from `[params.style]`. Use `static/css/site.css` for other changes.
 
+### Columns and inset boxes
+
+Use shortcodes to place columns and inset boxes in Markdown. The columns become one column on narrow screens. The inset box uses the site palette and spacing.
+
+```md
+{{< columns >}}
+{{< column >}}**Challenge:** Visitors needed clear signs.{{< /column >}}
+{{< column >}}**Response:** The team marked each route.{{< /column >}}
+{{< /columns >}}
+
+{{< detail-box title="Project detail" >}}
+The signs use the same names as the visitor guide.
+{{< /detail-box >}}
+```
+
 ## Content types
 
 Create standard Markdown files in these site directories:

@@ -101,6 +101,11 @@ assert 'class="link-preview"' in project
 assert 'href="/portfolio/field-guide/"' in project
 assert 'class="link-preview__card"' in project
 assert 'src="/js/previews.js"' in project
+assert 'class="content-columns"' in project
+assert project.count('class="content-column"') == 2
+assert "<strong>The challenge:</strong>" in project
+assert 'class="detail-box"' in project
+assert "The signs use the same names" in project
 assert "Wayfinding" in (output / "projects/index.html").read_text()
 assert "Field Guide" in (output / "portfolio/index.html").read_text()
 css = (output / "css/theme.css").read_text()
