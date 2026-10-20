@@ -11,6 +11,23 @@ mkdir -p "$output/minimal-source/content"
 printf 'baseURL = "https://example.org/"\ntitle = "Minimal Site"\ntheme = "roxo-flex"\n' > "$output/minimal-source/hugo.toml"
 printf '+++\ntitle = "Home"\n+++\n' > "$output/minimal-source/content/_index.md"
 printf '+++\ntitle = "Contact"\nlayout = "contact"\n+++\n' > "$output/minimal-source/content/contact.md"
+mkdir -p "$output/minimal-source/content/notes"
+cat > "$output/minimal-source/content/notes/Research Note.md" <<'EOF'
++++
+title = "Research Note"
+description = "A note with an encoded space in its file name."
+preview = true
++++
+The note body.
+EOF
+cat > "$output/minimal-source/content/notes/example.md" <<'EOF'
++++
+title = "Example"
++++
+Read the [Research Note](Research%20Note.md).
+
+Read the {{< preview href="https://example.org/guide" title="Guide" summary="External example." >}}guide{{< /preview >}}.
+EOF
 hugo --source "$output/minimal-source" --themesDir "$root/.." --destination "$output/minimal" --quiet
 grep -q 'Minimal Site' "$output/minimal/index.html"
 grep -q '©' "$output/minimal/index.html"
@@ -18,6 +35,9 @@ if grep -q '<form' "$output/minimal/contact/index.html"; then
   echo 'Minimal site rendered an unconfigured form.' >&2
   exit 1
 fi
+grep -q 'href="/notes/research-note/"' "$output/minimal/notes/example/index.html"
+grep -q 'A note with an encoded space' "$output/minimal/notes/example/index.html"
+grep -q 'External example.' "$output/minimal/notes/example/index.html"
 if command -v chromium >/dev/null 2>&1; then
   python3 "$root/tests/visual.py" "$output"
 fi

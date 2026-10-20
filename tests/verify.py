@@ -97,9 +97,16 @@ assert "Northern area" in (output / "project_areas/index.html").read_text()
 assert "Community hub" in (output / "project_areas/north/index.html").read_text()
 assert "project-gallery" in (output / "projects/wayfinding/index.html").read_text()
 project = (output / "projects/wayfinding/index.html").read_text()
-assert 'class="link-preview"' in project
+target_front = tomllib.loads((source / "content/portfolio/field-guide.md").read_text().split("+++", 2)[1])
+assert target_front["preview"] is True
+contact_front = tomllib.loads((source / "content/contact/_index.md").read_text().split("+++", 2)[1])
+assert contact_front["preview"] is False
+assert "{{< preview" not in (source / "content/projects/wayfinding.md").read_text()
+assert project.count('class="link-preview"') == 1
 assert 'href="/portfolio/field-guide/"' in project
 assert 'class="link-preview__card"' in project
+assert target_front["description"] in project
+assert '<a href="/contact/">contact page</a>' in project
 assert 'src="/js/previews.js"' in project
 assert 'class="content-columns"' in project
 assert project.count('class="content-column"') == 2

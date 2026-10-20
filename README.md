@@ -32,7 +32,7 @@ devenv shell -- check
 
 Set these values in the site's `hugo.toml`:
 
-```toml
+```md
 [params]
 business_name = "Example Studio"
 logo = "images/mark.svg"
@@ -157,21 +157,35 @@ Use simple SVG icons with an opaque shape and a transparent background. The them
 
 ### Link previews
 
-Use the `preview` shortcode in Markdown to add a detail box to a link. The link still works when JavaScript is unavailable. Desktop readers can hover over the link. Readers can also use the adjacent button to open the box. The button works with a keyboard or touch screen. Press Escape or use the close button to close the box.
+Set `preview = true` in a page's front matter to show a detail box for Markdown links to that page. The box uses the page's `title`, `description`, `image`, and `image_alt`. Omit `preview` or set it to `false` to keep ordinary links. This setting applies to links in Markdown content, not navigation or template links.
 
-For a page on the same site, set `page` to its content path. The shortcode reads the target page's title, description, image, and image alt text from front matter:
+Set the target page's front matter:
 
-```md
-Explore the {{< preview page="/portfolio/field-guide/" >}}Field Guide{{< /preview >}}.
+```toml
++++
+title = "Field Guide"
+description = "A clear visual system for a growing project."
+image = "images/work.svg"
+image_alt = "Abstract field guide cover"
+preview = true
++++
 ```
 
-Set `summary`, `image`, or `image_alt` in the shortcode to replace those page values. For an external link, set its address and preview text yourself:
+Use an ordinary Markdown link in the source page. Hugo resolves both site paths and relative `.md` paths. Obsidian's standard Markdown links work this way:
+
+```md
+Explore the [Field Guide](../portfolio/field-guide.md).
+```
+
+The link still works when JavaScript is unavailable. Desktop readers can hover over it. Readers can also use the adjacent button to open the box by keyboard or touch. Press Escape or use the close button to close it.
+
+The `preview` shortcode remains available for one-off links and external links. For an external link, set its address and preview text yourself:
 
 ```md
 Read the {{< preview href="https://example.org/guide" title="Example guide" summary="A short guide to the process." >}}guide{{< /preview >}}.
 ```
 
-The theme does not fetch external pages. It uses only site-owned content. Preview boxes use the colors, fonts, image filter, and button radius from `[params.style]`. Use `static/css/site.css` for other changes.
+The theme does not fetch external pages. It uses only site-owned content. Obsidian `[[wikilinks]]` need conversion to standard Markdown links before Hugo can render them. Preview boxes use the colors, fonts, image filter, and button radius from `[params.style]`. Use `static/css/site.css` for other changes.
 
 ### Columns and inset boxes
 
@@ -192,7 +206,7 @@ The signs use the same names as the visitor guide.
 
 Create standard Markdown files in these site directories:
 
-- `content/portfolio/`: portfolio cards and detail pages. Use `title`, `description`, `image`, `image_alt`, and `weight`.
+- `content/portfolio/`: portfolio cards and detail pages. Use `title`, `description`, `image`, `image_alt`, and `weight`. Set `preview = true` for link previews.
 - `content/projects/`: project list and detail pages. Use the same fields.
 - `content/project_areas/`: groups of projects. Add `_index.md` in each group. Add Markdown pages inside it. A nested page can set `project_images = ["images/a.svg", "images/b.svg"]` for a gallery.
 - `content/contact/_index.md`: contact introduction. The form uses `params.contact.form_endpoint`.

@@ -7,7 +7,9 @@ weight = 1
 +++
 This project shows how teams can communicate complex work.
 
-Explore the {{< preview page="/portfolio/field-guide/" >}}Field Guide{{< /preview >}} for a related example.
+Explore the [Field Guide](/portfolio/field-guide/) for a related example.
+
+Visit the [contact page](/contact/) to ask about this project.
 
 {{< columns >}}
 {{< column >}}
