@@ -5,9 +5,14 @@
       <span>{{ site.Params.business_name | default site.Title }}</span>
     </a>
     <input class="nav-toggle" type="checkbox" id="nav-toggle" aria-label="Toggle navigation">
-    <label class="nav-toggle-label" for="nav-toggle" aria-hidden="true"><span></span><span></span><span></span></label>
+    <label class="nav-toggle-label{{ if site.Params.menu_close_icon }} has-close-icon{{ end }}" for="nav-toggle" aria-hidden="true">
+      {{ with site.Params.menu_icon }}
+        {{ partial "icon.html" (dict "src" . "class" "menu-icon") }}
+      {{ else }}<span class="menu-line"></span><span class="menu-line"></span><span class="menu-line"></span>{{ end }}
+      {{ with site.Params.menu_close_icon }}{{ partial "icon.html" (dict "src" . "class" "menu-close-icon") }}{{ end }}
+    </label>
     <nav class="site-nav" aria-label="Main navigation">
-      {{ range site.Menus.main }}<a href="{{ .URL | relURL }}"{{ if $.IsMenuCurrent "main" . }} aria-current="page"{{ end }}>{{ .Name }}</a>{{ end }}
+      {{ range site.Menus.main }}<a href="{{ .URL | relURL }}"{{ if $.IsMenuCurrent "main" . }} aria-current="page"{{ end }}>{{ with .Params.icon }}{{ partial "icon.html" (dict "src" . "class" "nav-icon") }}{{ end }}{{ .Name }}</a>{{ end }}
     </nav>
   </div>
 </header>

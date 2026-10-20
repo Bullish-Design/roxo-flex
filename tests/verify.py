@@ -19,6 +19,7 @@ class Elements(HTMLParser):
         self.forms = []
         self.inputs = []
         self.nav = []
+        self.icons = []
         self.in_nav = False
 
     def handle_starttag(self, tag, attrs):
@@ -27,6 +28,10 @@ class Elements(HTMLParser):
             self.in_nav = True
         if tag == "section" and values.get("id"):
             self.sections.append(values["id"])
+        if "site-icon" in values.get("class", ""):
+            match = re.search(r"url\(['\"]?([^)'\"]+)", values.get("style", ""))
+            assert match, values
+            self.icons.append(match.group(1))
         if tag == "form":
             self.forms.append(values)
         if tag in ("input", "textarea"):
@@ -63,11 +68,17 @@ main = pages[output / "index.html"]
 assert config["params"]["business_name"] in index
 assert "nav-toggle" in index and "site-nav" in index
 assert len(main.nav) == len(config["menu"]["main"])
-assert (output / config["params"]["custom_css"]).exists()
+assert "css/site.css" not in index
+assert (output / "css/theme.css").exists()
+for path in main.icons:
+    assert (output / path.lstrip("/")).exists(), path
+assert main.icons, "Configured icons did not render"
 assert (output / config["params"]["favicon"]).exists()
 expected = [item for item in home["sections"] if home[item]["enabled"]]
 assert main.sections == expected, (main.sections, expected)
-assert "--button-radius:" in index and "--color-accent:" in index
+assert f"--color-accent: {config['params']['style']['accent']}" in index
+assert f"--font-body: {config['params']['style']['font_body']}" in index
+assert f"--icon-size: {config['params']['style']['icon_size']}" in index
 contact = pages[output / "contact/index.html"]
 assert len(contact.forms) == 1
 assert contact.forms[0]["action"] == config["params"]["contact"]["form_endpoint"]
@@ -91,6 +102,7 @@ css = (output / "css/theme.css").read_text()
 assert "@media(max-width:800px)" in css and "@media(max-width:540px)" in css
 assert ".nav-toggle:checked~.site-nav" in css
 if name == "muted":
-    assert "filter: grayscale(1)" in (output / "css/site.css").read_text()
+    assert "--image-filter: grayscale(1)" in index
+    assert "/icons/menu.svg" in main.icons and "/icons/close.svg" in main.icons
     assert "id=\"team\"" not in index
 print(f"{name}: {len(pages)} pages, links, images, sections, form, layouts, and responsive styles passed")

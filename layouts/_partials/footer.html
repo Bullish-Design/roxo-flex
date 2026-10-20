@@ -13,7 +13,7 @@
       {{ with site.Params.contact.phone }}<a href="tel:{{ . }}">{{ . }}</a>{{ end }}
     </address>
     <div class="social-links" aria-label="Social links">
-      {{ range site.Params.social }}<a href="{{ .url | safeURL }}" rel="noopener noreferrer">{{ .name }}</a>{{ end }}
+      {{ range site.Params.social }}<a href="{{ .url | safeURL }}" rel="noopener noreferrer">{{ with .icon }}{{ partial "icon.html" (dict "src" . "class" "social-icon") }}{{ end }}{{ .name }}</a>{{ end }}
     </div>
   </div>
 </footer>

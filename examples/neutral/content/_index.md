@@ -9,6 +9,7 @@ text = "Use this example to build a site for a studio, team, or independent prac
 image = "images/scene.svg"
 image_alt = "Abstract shapes in blue and cream"
 [hero.button]
+icon = "icons/arrow.svg"
 label = "See our work"
 url = "/portfolio/"
 [statistics]
@@ -63,6 +64,7 @@ enabled = true
 title = "Tell us what you are making."
 text = "We would like to hear about your project."
 [cta.button]
+icon = "icons/arrow.svg"
 label = "Get in touch"
 url = "/contact/"
 +++

@@ -9,6 +9,7 @@ text = "Clear structure and a measured palette make room for the content."
 image = "images/scene.svg"
 image_alt = "Muted geometric shapes"
 [hero.button]
+icon = "icons/arrow.svg"
 label = "Explore projects"
 url = "/projects/"
 [statistics]
@@ -53,6 +54,7 @@ enabled = true
 title = "Start a conversation."
 text = "Describe your idea and we will reply."
 [cta.button]
+icon = "icons/arrow.svg"
 label = "Contact us"
 url = "/contact/"
 +++

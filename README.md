@@ -18,7 +18,7 @@ printf 'theme = "roxo-flex"\n' >> hugo.toml
 hugo server
 ```
 
-Copy `examples/neutral/hugo.toml`, `content/`, and `static/` into a new site for a full starting point. Replace its example contact details and form endpoint before publication. The theme uses each site's `hugo.toml`, `content/`, and `static/` files.
+Copy `examples/neutral/hugo.toml`, `content/`, and `static/` into a new site for a full starting point. Replace its example contact details and form endpoint before publication. The theme uses each site's `hugo.toml`, `content/`, and `static/` files. Change the visual settings in `hugo.toml`. Change homepage text and button icons in `content/_index.md`. Store image, icon, and font files under `static/`.
 
 Build the included examples from this repository:
 
@@ -39,7 +39,8 @@ logo = "images/mark.svg"
 footer_logo = "images/mark.svg"
 favicon = "images/mark.svg"
 copyright = "© 2026 Example Studio"
-custom_css = "css/site.css"
+menu_icon = "icons/menu.svg"
+menu_close_icon = "icons/close.svg"
 
 [params.contact]
 address = "100 Example Street"
@@ -50,6 +51,7 @@ form_endpoint = "https://example.org/replace-this-endpoint"
 [[params.social]]
 name = "Social profile"
 url = "https://example.org/social"
+icon = "icons/social.svg"
 
 [[menu.main]]
 name = "Contact"
@@ -57,7 +59,7 @@ url = "/contact/"
 weight = 1
 ```
 
-All image paths point to the site's `static/` directory. For example, `images/mark.svg` maps to `static/images/mark.svg`. If `logo` or `footer_logo` is empty, the theme shows `business_name`. If `business_name` is empty, it shows the site title. If `form_endpoint` is empty, the contact page shows the email address without a form. Hugo cannot process form submissions. Set an endpoint that you control before you publish a working form.
+Image and icon paths point to the site's `static/` directory. For example, `icons/menu.svg` maps to `static/icons/menu.svg`. If `logo` or `footer_logo` is empty, the theme shows `business_name`. If `business_name` is empty, it shows the site title. If `form_endpoint` is empty, the contact page shows the email address without a form. Hugo cannot process form submissions. Set an endpoint that you control before you publish a working form.
 
 ## Homepage sections
 
@@ -88,13 +90,13 @@ label = "Projects"
 
 | Section | Content fields |
 | --- | --- |
-| `hero` | `eyebrow`, `title`, `text`, `image`, `image_alt`, `button.label`, `button.url` |
+| `hero` | `eyebrow`, `title`, `text`, `image`, `image_alt`, `button.label`, `button.url`, optional `button.icon` |
 | `statistics` | `title`, `items`: `before`, `number`, `after`, `label` |
 | `portfolio` | `title`, `text`, `limit`, optional `button`; cards come from `content/portfolio/` |
 | `testimonials` | `title`, `items`: `quote`, `name`, `role` |
 | `clients` | `title`, `items`: `name`, optional `logo` |
 | `team` | `title`, `items`: `name`, `role`, optional `image` |
-| `cta` | `title`, `text`, optional `button.label` and `button.url` |
+| `cta` | `title`, `text`, optional `button.label`, `button.url`, and `button.icon` |
 
 Each section also accepts `enabled`. The list order is the render order. The theme ignores unknown section names. The `portfolio` section uses page `weight` to order cards. Keep section content in the site, not the theme.
 
@@ -108,6 +110,7 @@ Set the following values in `[params.style]` in the site's `hugo.toml`. The them
 | `surface` | `#f3f4f5` | Section and footer background |
 | `text` | `#20262c` | Main text |
 | `muted` | `#58636b` | Secondary text |
+| `border` | `#d4dadd` | Header and card borders |
 | `accent` | `#285f70` | Links, numbers, and buttons |
 | `on_accent` | `#ffffff` | Text on accent |
 | `font_body` | `system-ui, sans-serif` | Body font family |
@@ -115,8 +118,42 @@ Set the following values in `[params.style]` in the site's `hugo.toml`. The them
 | `type_scale` | `1.2` | Large heading size multiplier |
 | `spacing` | `1rem` | Section spacing unit |
 | `button_radius` | `0.4rem` | Button corner radius |
+| `hero_image_radius` | `0` | Hero image corner radius |
+| `image_filter` | `none` | Filter for content images |
+| `icon_size` | `1.15rem` | Navigation, social, and button icon size |
 
-Use `custom_css = "css/site.css"` for deeper changes. Put the file at `static/css/site.css` in the site. It loads after the theme stylesheet. Use `@font-face` in that file if you need a local font. No generated CSS file needs editing.
+The examples set visual options in `hugo.toml` and `content/_index.md`. They do not use a site stylesheet. For effects outside these settings, set `custom_css = "css/site.css"`. Put that file at `static/css/site.css`. Hugo loads it after the theme stylesheet.
+
+### Local fonts
+
+Place font files in the site's `static/fonts/` directory. Declare each file in `hugo.toml`. Use the declared family name in `font_body` or `font_heading`.
+
+```toml
+[params.style]
+font_body = '"Brand Sans", sans-serif'
+font_heading = 'Georgia, serif'
+
+[[params.font_faces]]
+family = "Brand Sans"
+src = "fonts/brand-sans.woff2"
+format = "woff2"
+weight = "400 700"
+style = "normal"
+```
+
+Add another `[[params.font_faces]]` entry for each font file or style. The `format` value must match the file. The browser loads the local file from the site. System font families need no `font_faces` entry.
+
+### Icons
+
+Place icon files in the site's `static/icons/` directory. Set these optional paths in `hugo.toml`:
+
+- `params.menu_icon` and `params.menu_close_icon` set the mobile menu icons.
+- `params.social[].icon` sets a social link icon.
+- `menu.main[].params.icon` sets a navigation item icon.
+
+Set `button.icon = "icons/arrow.svg"` under `[hero.button]` or `[cta.button]` in `content/_index.md`. The theme also accepts `logo`, `footer_logo`, `favicon`, and client `logo` paths.
+
+Use simple SVG icons with an opaque shape and a transparent background. The theme uses the shape as a mask. The icon takes its text color from `[params.style]`. This lets a palette change recolor icons without an SVG edit. Logos and client images keep their own colors.
 
 ## Content types
 
@@ -135,11 +172,11 @@ The theme supplies list and single layouts for `projects`, `project_areas`, and 
 2. Move `businessName`, logo, footer logo, favicon, copyright, contact details, social links, and navigation into `hugo.toml`. Follow the names in `examples/muted/hugo.toml`.
 3. Move `params.banner` into `[hero]` in `content/_index.md`. Move `data/counter.yml` into `[statistics]`. Use `before`, `number`, and `after` for each value. The old template expected `operator`, while the old data supplied `number`.
 4. Move portfolio, `projects`, and nested `project_areas` Markdown into the same directories in the new site. Use `image` and `project_images` in front matter. The new nested templates handle group and detail pages without the old blog template.
-5. Replace old Sass variables with `[params.style]`. Put additional rules in the site's `static/css/site.css`.
+5. Replace old Sass variables with `[params.style]`. Set icon paths and local font files in `hugo.toml`. Use `static/css/site.css` only for additional rules.
 6. Set a real form endpoint. The examples contain placeholder endpoints and do not receive submissions.
 
 The old fork's gray palette maps to the muted example. Its business-name header and counter prefix and suffix remain available. The new templates use current Hugo data and layout conventions.
 
 ## Verify
 
-Run `devenv test` or `devenv shell -- check`. The check builds both examples. It checks local links, images, branding, section order, optional sections, forms, and custom layouts. Chromium renders each example at 1440 × 900 and 390 × 844. The check tests navigation visibility and horizontal overflow at both widths. Set `ROXO_SCREENSHOT_DIR` to keep the screenshots.
+Run `devenv test` or `devenv shell -- check`. The check builds both examples. It checks local links, images, icons, branding, section order, optional sections, forms, and custom layouts. Chromium renders each example at 1440 × 900 and 390 × 844. The check tests navigation visibility and horizontal overflow at both widths. Set `ROXO_SCREENSHOT_DIR` to keep the screenshots.

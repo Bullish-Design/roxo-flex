@@ -5,7 +5,7 @@
   {{ if eq $name "hero" }}
     <section class="hero section" id="hero"><div class="container hero-grid">
       <div><p class="eyebrow">{{ $section.eyebrow }}</p><h1>{{ $section.title }}</h1><p class="lead">{{ $section.text }}</p>
-        {{ with $section.button }}<a class="button" href="{{ .url | relURL }}">{{ .label }}</a>{{ end }}
+        {{ with $section.button }}<a class="button" href="{{ .url | relURL }}">{{ .label }}{{ with .icon }}{{ partial "icon.html" (dict "src" . "class" "button-icon") }}{{ end }}</a>{{ end }}
       </div>
       {{ with $section.image }}<img class="hero-image" src="{{ . | relURL }}" alt="{{ $section.image_alt | default "" }}">{{ end }}
     </div></section>
@@ -31,6 +31,6 @@
       {{ range $section.items }}<article class="card team-card">{{ with .image }}<img src="{{ . | relURL }}" alt="">{{ end }}<h3>{{ .name }}</h3><p>{{ .role }}</p></article>{{ end }}
     </div></div></section>
   {{ else if eq $name "cta" }}
-    <section class="section cta" id="cta"><div class="container"><h2>{{ $section.title }}</h2><p>{{ $section.text }}</p>{{ with $section.button }}<a class="button" href="{{ .url | relURL }}">{{ .label }}</a>{{ end }}</div></section>
+    <section class="section cta" id="cta"><div class="container"><h2>{{ $section.title }}</h2><p>{{ $section.text }}</p>{{ with $section.button }}<a class="button" href="{{ .url | relURL }}">{{ .label }}{{ with .icon }}{{ partial "icon.html" (dict "src" . "class" "button-icon") }}{{ end }}</a>{{ end }}</div></section>
   {{ end }}
 {{ end }}

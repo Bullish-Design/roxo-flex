@@ -10,7 +10,6 @@ logo = "images/mark.svg"
 footer_logo = "images/mark.svg"
 favicon = "images/mark.svg"
 copyright = "© 2026 Example Studio"
-custom_css = "css/site.css"
 
 [params.contact]
 address = "100 Example Street, Sample City"
@@ -30,10 +29,15 @@ font_heading = "Georgia, serif"
 type_scale = "1.25"
 spacing = "1rem"
 button_radius = "0.4rem"
+hero_image_radius = "1rem"
+image_filter = "none"
+border = "#d4dadd"
+icon_size = "1.15rem"
 
 [[params.social]]
 name = "Social profile"
 url = "https://example.org/social"
+icon = "icons/social.svg"
 
 [[menu.main]]
 name = "Home"
@@ -43,6 +47,8 @@ weight = 1
 name = "Work"
 url = "/portfolio/"
 weight = 2
+[menu.main.params]
+icon = "icons/work.svg"
 [[menu.main]]
 name = "Projects"
 url = "/projects/"

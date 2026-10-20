@@ -9,8 +9,9 @@ description = "A muted Roxo Flex example."
 logo = "images/mark.svg"
 footer_logo = "images/mark.svg"
 favicon = "images/mark.svg"
+menu_icon = "icons/menu.svg"
+menu_close_icon = "icons/close.svg"
 copyright = "© 2026 Quiet Works"
-custom_css = "css/site.css"
 
 [params.contact]
 address = "24 Sample Lane, North District"
@@ -30,10 +31,15 @@ font_heading = "Georgia, serif"
 type_scale = "1.22"
 spacing = "1.1rem"
 button_radius = "0"
+hero_image_radius = "0"
+image_filter = "grayscale(1)"
+border = "#d2d2d2"
+icon_size = "1.15rem"
 
 [[params.social]]
 name = "Social profile"
 url = "https://example.org/social"
+icon = "icons/social.svg"
 
 [[menu.main]]
 name = "Home"
@@ -43,6 +49,8 @@ weight = 1
 name = "Project areas"
 url = "/project_areas/"
 weight = 2
+[menu.main.params]
+icon = "icons/work.svg"
 [[menu.main]]
 name = "Projects"
 url = "/projects/"

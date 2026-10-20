@@ -22,9 +22,23 @@ window.addEventListener("load", function () {
   body.dataset.width = window.innerWidth;
   body.dataset.overflow = document.documentElement.scrollWidth - window.innerWidth;
   body.dataset.navClosed = getComputedStyle(nav).display;
+  body.dataset.fontBody = getComputedStyle(body).fontFamily;
+  body.dataset.fontHeading = getComputedStyle(document.querySelector("h1")).fontFamily;
+  const icon = document.querySelector(".site-icon");
+  body.dataset.iconMask = icon ? getComputedStyle(icon).maskImage : "none";
+  const button = document.querySelector(".button");
+  const buttonIcon = button && button.querySelector(".site-icon");
+  body.dataset.buttonColor = button ? getComputedStyle(button).color : "none";
+  body.dataset.buttonIconColor = buttonIcon ? getComputedStyle(buttonIcon).backgroundColor : "none";
+  const menuIcon = document.querySelector(".menu-icon");
+  const closeIcon = document.querySelector(".menu-close-icon");
+  body.dataset.menuIconClosed = menuIcon ? getComputedStyle(menuIcon).display : "none";
+  body.dataset.closeIconClosed = closeIcon ? getComputedStyle(closeIcon).display : "none";
   body.dataset.label = getComputedStyle(label).display;
   toggle.checked = true;
   body.dataset.navOpen = getComputedStyle(nav).display;
+  body.dataset.menuIconOpen = menuIcon ? getComputedStyle(menuIcon).display : "none";
+  body.dataset.closeIconOpen = closeIcon ? getComputedStyle(closeIcon).display : "none";
 });
 </script></body>'''
 for site in ("neutral", "muted"):
@@ -57,6 +71,10 @@ for site in ("neutral", "muted"):
                     assert match, (site, viewport, key)
                     return match.group(1)
                 assert int(value("overflow")) <= 1, (site, viewport, value("overflow"))
+                assert "Georgia" in value("font-heading")
+                assert ("Arial" if site == "muted" else "system-ui") in value("font-body")
+                assert "/icons/" in value("icon-mask"), (site, viewport, value("icon-mask"))
+                assert value("button-color") == value("button-icon-color")
                 if viewport == "desktop":
                     assert value("nav-closed") == "flex"
                     assert value("label") == "none"
@@ -64,6 +82,11 @@ for site in ("neutral", "muted"):
                     assert value("nav-closed") == "none"
                     assert value("nav-open") == "flex"
                     assert value("label") == "flex"
+                    if site == "muted":
+                        assert value("menu-icon-closed") == "block"
+                        assert value("close-icon-closed") == "none"
+                        assert value("menu-icon-open") == "none"
+                        assert value("close-icon-open") == "block"
                 image = shots / f"{site}-{viewport}.png"
                 result = subprocess.run(base + [f"--screenshot={image}",
                                         f"http://127.0.0.1:{port}/"],
