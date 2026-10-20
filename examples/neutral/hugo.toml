@@ -1,0 +1,57 @@
+baseURL = "https://example.org/"
+title = "Example Studio"
+theme = "roxo-flex"
+languageCode = "en-us"
+
+[params]
+business_name = "Example Studio"
+description = "A sample studio site built with Roxo Flex."
+logo = "images/mark.svg"
+footer_logo = "images/mark.svg"
+favicon = "images/mark.svg"
+copyright = "© 2026 Example Studio"
+custom_css = "css/site.css"
+
+[params.contact]
+address = "100 Example Street, Sample City"
+email = "hello@example.org"
+phone = "+1 555 0100"
+form_endpoint = "https://example.org/replace-this-endpoint"
+
+[params.style]
+background = "#ffffff"
+surface = "#edf3f4"
+text = "#17282d"
+muted = "#56676d"
+accent = "#28677a"
+on_accent = "#ffffff"
+font_body = "system-ui, sans-serif"
+font_heading = "Georgia, serif"
+type_scale = "1.25"
+spacing = "1rem"
+button_radius = "0.4rem"
+
+[[params.social]]
+name = "Social profile"
+url = "https://example.org/social"
+
+[[menu.main]]
+name = "Home"
+url = "/"
+weight = 1
+[[menu.main]]
+name = "Work"
+url = "/portfolio/"
+weight = 2
+[[menu.main]]
+name = "Projects"
+url = "/projects/"
+weight = 3
+[[menu.main]]
+name = "Areas"
+url = "/project_areas/"
+weight = 4
+[[menu.main]]
+name = "Contact"
+url = "/contact/"
+weight = 5

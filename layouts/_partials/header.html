@@ -1,0 +1,13 @@
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="{{ site.Home.RelPermalink }}" aria-label="{{ site.Params.business_name | default site.Title }} home">
+      {{ with site.Params.logo }}<img src="{{ . | relURL }}" alt="" width="44" height="44">{{ end }}
+      <span>{{ site.Params.business_name | default site.Title }}</span>
+    </a>
+    <input class="nav-toggle" type="checkbox" id="nav-toggle" aria-label="Toggle navigation">
+    <label class="nav-toggle-label" for="nav-toggle" aria-hidden="true"><span></span><span></span><span></span></label>
+    <nav class="site-nav" aria-label="Main navigation">
+      {{ range site.Menus.main }}<a href="{{ .URL | relURL }}"{{ if $.IsMenuCurrent "main" . }} aria-current="page"{{ end }}>{{ .Name }}</a>{{ end }}
+    </nav>
+  </div>
+</header>

@@ -1,48 +1,33 @@
 <!doctype html>
-<html
-  itemscope
-  class="{{- if not site.Params.theme_switcher -}}
-    {{- site.Params.theme_default -}}
-  {{- end -}}"
-  lang="{{ site.Language.Locale | default `en-US` }}"
-  itemtype="http://schema.org/WebPage">
-  <head>
-    <!-- head (don't cache it) -->
-    {{ partial "essentials/head.html" . }}
-
-
-    <!-- style (always cache it) -->
-    {{ partialCached "essentials/style.html" . }}
-
-  </head>
-
-  <body class="flex flex-col min-h-screen">
-    <!-- cache partial only in production -->
-    {{ if hugo.IsProduction }}
-      {{ partialCached "preloader.html" . }}
-      {{ partialCached "gtm-noscript.html" . }}
-    {{ else }}
-      {{ partial "preloader.html" . }}
-
-
-      <!-- tailwind size indicator -->
-      {{ partial "components/tw-size-indicator.html" . }}
-    {{ end }}
-
-
-    <!-- header (don't cache it) -->
-    {{ partial "essentials/header.html" . }}
-
-
-    <main class="grow">
-      {{ block "main" . }}{{ end }}
-    </main>
-
-    <!-- footer -->
-    {{ partial "essentials/footer.html" . }}
-
-
-    <!-- script (always cache it) -->
-    {{/*  {{ partialCached "essentials/script.html" . }}  */}}
-  </body>
+<html lang="{{ site.Language.Lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
+  <meta name="description" content="{{ .Description | default site.Params.description | default site.Title }}">
+  {{ with site.Params.favicon }}<link rel="icon" href="{{ . | relURL }}">{{ end }}
+  {{ $s := site.Params.style }}
+  <style>
+    :root {
+      --color-bg: {{ $s.background | default "#ffffff" | safeCSS }};
+      --color-surface: {{ $s.surface | default "#f3f4f5" | safeCSS }};
+      --color-text: {{ $s.text | default "#20262c" | safeCSS }};
+      --color-muted: {{ $s.muted | default "#58636b" | safeCSS }};
+      --color-accent: {{ $s.accent | default "#285f70" | safeCSS }};
+      --color-on-accent: {{ $s.on_accent | default "#ffffff" | safeCSS }};
+      --font-body: {{ $s.font_body | default "system-ui, sans-serif" | safeCSS }};
+      --font-heading: {{ $s.font_heading | default "system-ui, sans-serif" | safeCSS }};
+      --type-scale: {{ $s.type_scale | default "1.2" | safeCSS }};
+      --space: {{ $s.spacing | default "1rem" | safeCSS }};
+      --button-radius: {{ $s.button_radius | default "0.4rem" | safeCSS }};
+    }
+  </style>
+  {{ with resources.Get "css/theme.css" }}<link rel="stylesheet" href="{{ .RelPermalink }}">{{ end }}
+  {{ with site.Params.custom_css }}<link rel="stylesheet" href="{{ . | relURL }}">{{ end }}
+</head>
+<body>
+  {{ partial "header.html" . }}
+  <main id="main">{{ block "main" . }}{{ end }}</main>
+  {{ partial "footer.html" . }}
+</body>
 </html>

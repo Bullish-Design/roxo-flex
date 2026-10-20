@@ -1,17 +1,1 @@
-{{ define "main" }}
-
-
-  <section class="section">
-    <div class="container">
-      <ul class="text-center">
-        {{ range .RegularPages }}
-          <li class="m-3">
-            <a href="{{ .Permalink }}" class="text-text-dark  block text-xl">
-              {{ .Title }}
-            </a>
-          </li>
-        {{ end }}
-      </ul>
-    </div>
-  </section>
-{{ end }}
+{{ define "main" }}<section class="section page-top"><div class="container"><h1>{{ .Title }}</h1>{{ with .Content }}<div class="prose">{{ . }}</div>{{ end }}<div class="card-grid">{{ range .RegularPages.ByWeight }}{{ partial "card.html" . }}{{ end }}</div></div></section>{{ end }}
