@@ -96,6 +96,11 @@ assert "project-gallery" in (output / "project_areas/north/community-hub/index.h
 assert "Northern area" in (output / "project_areas/index.html").read_text()
 assert "Community hub" in (output / "project_areas/north/index.html").read_text()
 assert "project-gallery" in (output / "projects/wayfinding/index.html").read_text()
+project = (output / "projects/wayfinding/index.html").read_text()
+assert 'class="link-preview"' in project
+assert 'href="/portfolio/field-guide/"' in project
+assert 'class="link-preview__card"' in project
+assert 'src="/js/previews.js"' in project
 assert "Wayfinding" in (output / "projects/index.html").read_text()
 assert "Field Guide" in (output / "portfolio/index.html").read_text()
 css = (output / "css/theme.css").read_text()

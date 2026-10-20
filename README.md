@@ -25,7 +25,7 @@ Build the included examples from this repository:
 ```sh
 hugo --source examples/neutral --themesDir ..
 hugo --source examples/muted --themesDir ..
-devenv test
+devenv shell -- check
 ```
 
 ## Site configuration
@@ -155,6 +155,24 @@ Set `button.icon = "icons/arrow.svg"` under `[hero.button]` or `[cta.button]` in
 
 Use simple SVG icons with an opaque shape and a transparent background. The theme uses the shape as a mask. The icon takes its text color from `[params.style]`. This lets a palette change recolor icons without an SVG edit. Logos and client images keep their own colors.
 
+### Link previews
+
+Use the `preview` shortcode in Markdown to add a detail box to a link. The link still works when JavaScript is unavailable. Desktop readers can hover over the link. Readers can also use the adjacent button to open the box. The button works with a keyboard or touch screen. Press Escape or use the close button to close the box.
+
+For a page on the same site, set `page` to its content path. The shortcode reads the target page's title, description, image, and image alt text from front matter:
+
+```md
+Explore the {{< preview page="/portfolio/field-guide/" >}}Field Guide{{< /preview >}}.
+```
+
+Set `summary`, `image`, or `image_alt` in the shortcode to replace those page values. For an external link, set its address and preview text yourself:
+
+```md
+Read the {{< preview href="https://example.org/guide" title="Example guide" summary="A short guide to the process." >}}guide{{< /preview >}}.
+```
+
+The theme does not fetch external pages. It uses only site-owned content. Preview boxes use the colors, fonts, image filter, and button radius from `[params.style]`. Use `static/css/site.css` for other changes.
+
 ## Content types
 
 Create standard Markdown files in these site directories:
@@ -179,4 +197,4 @@ The old fork's gray palette maps to the muted example. Its business-name header 
 
 ## Verify
 
-Run `devenv test` or `devenv shell -- check`. The check builds both examples. It checks local links, images, icons, branding, section order, optional sections, forms, and custom layouts. Chromium renders each example at 1440 × 900 and 390 × 844. The check tests navigation visibility and horizontal overflow at both widths. Set `ROXO_SCREENSHOT_DIR` to keep the screenshots.
+Run `devenv shell -- check`. The check builds both examples. It checks local links, images, icons, branding, section order, optional sections, forms, custom layouts, and link previews. Chromium renders each example at 1440 × 900 and 390 × 844. The check tests navigation, preview interaction, and horizontal overflow at both widths. Set `ROXO_SCREENSHOT_DIR` to keep the screenshots.

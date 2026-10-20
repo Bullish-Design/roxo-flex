@@ -116,5 +116,69 @@ for site in ("neutral", "muted"):
                 expected = "<form" if page == "contact" else "project-gallery"
                 assert expected in result.stdout, (site, page)
                 print(f"{site} mobile {page}: no overflow, content passed")
+        preview_page = "projects/wayfinding"
+        preview_source = (root / site / preview_page / "index.html").read_text()
+        preview_probe = '''<script>
+window.addEventListener("load", function () {
+  const preview = document.querySelector(".link-preview");
+  const link = preview.querySelector("a");
+  const toggle = preview.querySelector(".link-preview__toggle");
+  const card = preview.querySelector(".link-preview__card");
+  const body = document.body;
+  body.dataset.previewLink = link.getAttribute("href");
+  body.dataset.previewReady = !toggle.hidden && card.hidden;
+  preview.dispatchEvent(new PointerEvent("pointerenter", {pointerType: "mouse"}));
+  body.dataset.previewHover = !card.hidden;
+  preview.dispatchEvent(new PointerEvent("pointerleave", {pointerType: "mouse"}));
+  setTimeout(function () {
+    body.dataset.previewLeft = card.hidden;
+    preview.dispatchEvent(new PointerEvent("pointerenter", {pointerType: "touch"}));
+    body.dataset.previewTouch = card.hidden;
+    toggle.click();
+    body.dataset.previewClick = !card.hidden && toggle.getAttribute("aria-expanded") === "true";
+    body.dataset.previewPosition = getComputedStyle(card).position;
+    body.dataset.previewOverflow = document.documentElement.scrollWidth - window.innerWidth;
+    card.querySelector(".link-preview__close").click();
+    body.dataset.previewClose = card.hidden;
+    toggle.click();
+    document.dispatchEvent(new KeyboardEvent("keydown", {key: "Escape"}));
+    body.dataset.previewEscape = card.hidden && toggle.getAttribute("aria-expanded") === "false";
+  }, 200);
+});
+</script></body>'''
+        (root / site / preview_page / "probe.html").write_text(
+            preview_source.replace("</body>", preview_probe)
+        )
+        for viewport, width, height in (("desktop", 1440, 900), ("mobile", 390, 844)):
+            with tempfile.TemporaryDirectory() as profile:
+                base = ["chromium", "--headless", "--no-sandbox", "--disable-gpu",
+                        "--disable-dev-shm-usage", f"--user-data-dir={profile}",
+                        f"--window-size={width},{height}", "--virtual-time-budget=1000"]
+                result = subprocess.run(base + ["--dump-dom",
+                    f"http://127.0.0.1:{port}/{preview_page}/probe.html"],
+                    capture_output=True, text=True, timeout=30)
+                assert result.returncode == 0, result.stderr[-1000:]
+                for field in ("ready", "hover", "left", "touch", "click", "close", "escape"):
+                    assert f'data-preview-{field}="true"' in result.stdout, (site, viewport, field)
+                assert 'data-preview-link="/portfolio/field-guide/"' in result.stdout
+                assert 'data-preview-position="fixed"' in result.stdout
+                match = re.search(r'data-preview-overflow="(-?\d+)"', result.stdout)
+                assert match and int(match.group(1)) <= 1, (site, viewport, "preview overflow")
+                open_script = '''<script>
+window.addEventListener("load", function () {
+  document.querySelector(".link-preview__toggle").click();
+});
+</script></body>'''
+                (root / site / preview_page / "open.html").write_text(
+                    preview_source.replace("</body>", open_script)
+                )
+                image = shots / f"{site}-{viewport}-preview.png"
+                shot = subprocess.run(base + [f"--screenshot={image}",
+                    f"http://127.0.0.1:{port}/{preview_page}/open.html"],
+                    capture_output=True, timeout=30)
+                assert shot.returncode == 0, shot.stderr[-1000:]
+                with image.open("rb") as file:
+                    assert file.read(8) == b"\x89PNG\r\n\x1a\n"
+                print(f"{site} {viewport} preview: hover, click, Escape, link, and fit passed")
     finally:
         server.shutdown()
